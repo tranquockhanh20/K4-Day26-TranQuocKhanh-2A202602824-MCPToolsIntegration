@@ -16,6 +16,9 @@ Cách chạy (cùng thư mục với weather_server.py, client tự khởi độ
 import asyncio
 import sys
 
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
@@ -39,6 +42,15 @@ async def main() -> None:
                 result = await session.call_tool("get_weather", {"city": city})
                 print(f"\ncall_tool get_weather(city={city!r}):")
                 print("  ->", result.content[0].text)
+
+            # 3. Gọi thử tool mới get_forecast từ client (Bước 5 của bài Lab)
+            print("\n--- Gọi thử tool mới: get_forecast ---")
+            for city, days in [("Hanoi", 2), ("Danang", 3)]:
+                result_forecast = await session.call_tool(
+                    "get_forecast", {"city": city, "days": days}
+                )
+                print(f"\ncall_tool get_forecast(city={city!r}, days={days}):")
+                print("  ->", result_forecast.content[0].text)
 
 
 if __name__ == "__main__":
